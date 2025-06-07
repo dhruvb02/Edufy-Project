@@ -4,7 +4,7 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route></Route>
+        <Route path> </Route>
       </Routes>
     </div>
 
