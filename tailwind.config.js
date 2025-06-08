@@ -129,7 +129,7 @@ module.exports = {
         'video':'18px 18px white',
         'madam':'-18px -18px white',
         'madamSmall':'-10px -10px white',
-        'coursecard':'10px 10px yellow',
+        'Course_Card':'10px 10px yellow',
         'Timeline':'0 0 10px  rgba(0,0,0,0.2)'
       },
       maxWidth: {

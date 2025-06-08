@@ -16,11 +16,9 @@ import LearningLanguageSection from "../components/core/HomePage/LearningLanguag
 import TimelineSection from "../components/core/HomePage/Timeline"
 import { useEffect, useState } from "react"
 import ConfirmationModal from "../components/common/ConfirmationModal"
-
-
 function Home() {
   
-
+  const [confirmationModal,setConfirmationModal]=useState(null);
   return (
     <div>
       {/* Section 1 */}
