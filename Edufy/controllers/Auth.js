@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const  jwt = require("jsonwebtoken");
 const mailSender = require('../utils/mailSender');
 const otpTemplate = require('../mail_templates/emailVerification')
+const { passwordUpdated } = require("../mail_templates/passwordUpdate");
 
 require("dotenv").config();
 
@@ -230,17 +231,24 @@ exports.login= async(req, res) =>{
                 accountType: user.accountType,
             }
             const token= jwt.sign(payload, process.env.JWT_SECRET, {
-                expiresIn: "2h",
+                expiresIn: "7d",
             });
 
             user.token = token;
             user.password = undefined;
 
             // create cookie and send response
-            const options ={
+            const options = {
                 expires: new Date(Date.now() + 3*24*60*60*1000),
                 httpOnly: true,
-            }
+
+                // ✨ Allow cross-site requests to carry this cookie ✨
+                sameSite: "none",                   
+                secure: process.env.NODE_ENV === "production",  
+                // domain/path are optional but can help you scope it precisely:
+                domain: "localhost",                 
+                path: "/",
+            };
 
             res.cookie("token", token, options).status(200).json({
                 success: true,

@@ -45,14 +45,25 @@ function Navbar() {
 
   return (
     <div
-      className={`flex h-14 relative items-center justify-center border-b-[1px] border-b-richblack-700 ${
+      className={`flex h-16 relative items-center justify-center border-b-[1px] border-b-richblack-700 ${
         location.pathname !== "/" ? "bg-richblack-800" : ""
       } transition-all duration-200`}
     >
       <div className="flex w-11/12 max-w-maxContent items-center justify-between">
         {/* Logo */}
         <Link to="/">
-          <img src={logo} alt="Logo" width={160} height={32} loading="lazy" />
+         <img
+      src={logo}
+      alt="EduFy Logo"
+      loading="lazy"
+      className="
+        h-12      /* max-height: 32px */
+        w- 100   /* auto width to maintain aspect ratio */
+        rounded-md /* medium corner radius */
+        bg-richblack-900   /* white background behind logo */
+        p-0.25        /* small padding */
+      "
+    />
         </Link>
         {/* Navigation links */}
         <nav className="hidden md:block">

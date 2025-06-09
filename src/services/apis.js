@@ -1,4 +1,6 @@
-const BASE_URL = process.env.REACT_APP_BASE_URL
+import { axiosInstance } from "../services/apiconnector";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // AUTH ENDPOINTS
 export const endpoints = {

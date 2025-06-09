@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import Spinner from "../components/common/Spinner";
+
+
 const VerifyEmail=()=>{
   const {loading,signupData}=useSelector((state)=>state.auth);
   const dispatch=useDispatch();
