@@ -35,7 +35,7 @@ exports.resetPasswordToken = async (req,res) => {
         const updatedDetails = await User.findOneAndUpdate({email:email},{token: token, resetPasswordExpires: Date.now()+ 5*60*1000}, {new: true}); 
         //link generation and send link
 
-        const url = `https://localhost:3000/update-password/${token}`;
+        const url = `http://localhost:3000/update-password/${token}`;
         // send mail
         await mailSender(email,"Password Reset Link - Edufy", `Password reset link : ${url}`);
 

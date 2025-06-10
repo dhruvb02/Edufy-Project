@@ -43,7 +43,7 @@ function App() {
           <Route path="/signup" element={<OpenRoute><Signup/></OpenRoute>}/>
           <Route path="/verify-email" element={<OpenRoute><VerifyEmail/></OpenRoute>}/>
           <Route path="/forgot-password" element={<OpenRoute><ForgotPassword/></OpenRoute>}/>
-          <Route path="/update-password/:id" element={<OpenRoute><UpdatePassword/></OpenRoute>}/>
+          <Route path="/update-password/:token" element={<OpenRoute><UpdatePassword/></OpenRoute>}/>
           <Route path="/about" element={<OpenRoute><About/></OpenRoute>}/>
           <Route path="/contact" element={<OpenRoute><ContactUs/></OpenRoute>}/>  
           <Route element={
