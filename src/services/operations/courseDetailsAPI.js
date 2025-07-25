@@ -1,7 +1,5 @@
 import { toast } from "react-hot-toast"
-
 import { updateCompletedLectures } from "../../slices/viewCourseSlice"
-// import { setLoading } from "../../slices/profileSlice";
 import { apiConnector } from "../apiconnector"
 import { courseEndpoints } from "../apis"
 
@@ -265,6 +263,8 @@ export const fetchInstructorCourses = async (token) => {
   let result = []
   const toastId = toast.loading("Loading...")
   try {
+    console.log("Fetching instructor courses with token:", token?.substring(0, 20));
+    
     const response = await apiConnector(
       "GET",
       GET_ALL_INSTRUCTOR_COURSES_API,
@@ -273,14 +273,21 @@ export const fetchInstructorCourses = async (token) => {
         Authorization: `Bearer ${token}`,
       }
     )
+    
     console.log("INSTRUCTOR COURSES API RESPONSE............", response)
+    
     if (!response?.data?.success) {
-      throw new Error("Could Not Fetch Instructor Courses")
+      throw new Error(response?.data?.message || "Could Not Fetch Instructor Courses")
     }
-    result = response?.data?.data
+    
+    result = response?.data?.data || []
   } catch (error) {
     console.log("INSTRUCTOR COURSES API ERROR............", error)
-    toast.error(error.message)
+    
+    // Don't show error for 401 - let component handle it
+    if (error.response?.status !== 401) {
+      toast.error(error.message || "Could Not Fetch Instructor Courses")
+    }
   }
   toast.dismiss(toastId)
   return result
@@ -306,30 +313,29 @@ export const deleteCourse = async (data, token) => {
 }
 
 // get full details of a course
+// Fix the getFullDetailsOfCourse function
 export const getFullDetailsOfCourse = async (courseId, token) => {
   const toastId = toast.loading("Loading...")
-  //   dispatch(setLoading(true));
   let result = null
   try {
-    console.log("Course Id at API:",courseId);
-    const response=await apiConnector("GET",GET_FULL_COURSE_DETAILS_AUTHENTICATED,null,{
-     
-      Authorization: `Bearer ${token}`
-    },{courseId:courseId});
+    const response = await apiConnector(
+      "POST", 
+      GET_FULL_COURSE_DETAILS_AUTHENTICATED,
+      { courseId }, // Send courseId in body
+      {
+        Authorization: `Bearer ${token}`
+      }
+    );
     
-    console.log("COURSE_FULL_DETAILS_API API RESPONSE............", response)
-
     if (!response.data.success) {
       throw new Error(response.data.message)
     }
     result = response?.data?.data
   } catch (error) {
     console.log("COURSE_FULL_DETAILS_API API ERROR............", error)
-    result = error.response.data
-    // toast.error(error.response.data.message);
+    result = error.response?.data
   }
   toast.dismiss(toastId)
-  //   dispatch(setLoading(false));
   return result
 }
 

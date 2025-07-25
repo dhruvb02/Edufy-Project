@@ -1,65 +1,75 @@
 const mongoose = require("mongoose");
 
 const courseSchema = new mongoose.Schema({
-    courseName:{
-        type: String,
-        trim: true,
-        required: true
+  courseName: { 
+    type: String, 
+    required: true,
+    trim: true 
+  },
+  courseDescription: { 
+    type: String, 
+    required: true,
+    trim: true 
+  },
+  instructor: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  whatYouWillLearn: { 
+    type: String, 
+    required: true 
+  },
+  courseContent: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Section",
     },
-    courseDescription: {
-        type: String
-
+  ],
+  ratingAndReviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RatingAndReview",
     },
-    instructor:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:"User",
-        required: true
-
+  ],
+  price: { 
+    type: Number, 
+    required: true 
+  },
+  thumbnail: { 
+    type: String, 
+    required: true 
+  },
+  // FIX: Change this from ObjectId array to String array
+  tag: { 
+    type: [String], 
+    required: true 
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
+  studentsEnrolled: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    whatYouWillLearn :{
-        type: String,
-
-
-    },
-    courseContent:[
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Section",
-        }
-    ],
-    ratingAndReviews: [
-        {
-             type: mongoose.Schema.Types.ObjectId,
-             ref:"RatingAndReview",
-        }
-    ],
-    price:{
-        type: Number,
-
-    },
-    thumbnail:{
-        type: String
-    },
-    tag:{
-         type: mongoose.Schema.Types.ObjectId,
-         ref:"Tag",
-    },
-    category: {
-		type: mongoose.Schema.Types.ObjectId,
-		required: true,
-		ref: "Category",
-	},
-    studentsEnrolled:[
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            red:"User",
-
-        }
-    ]
-    
-
-    
+  ],
+  instructions: { 
+    type: [String] 
+  },
+  status: {
+    type: String,
+    enum: ["Draft", "Published"],
+    default: "Draft",
+  },
+  createdAt: { 
+    type: Date, 
+    default: Date.now 
+  },
+}, {
+  timestamps: true
 });
 
-module.exports = mongoose.model("Course",courseSchema );
+module.exports = mongoose.model("Course", courseSchema);

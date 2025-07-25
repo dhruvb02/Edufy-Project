@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-hot-toast"
 
 import { editCourseDetails } from "../../../../../services/operations/courseDetailsAPI"
 import { resetCourseState, setStep } from "../../../../../slices/courseSlice"
@@ -21,7 +22,7 @@ export default function PublishCourse() {
     if (course?.status === COURSE_STATUS.PUBLISHED) {
       setValue("public", true)
     }
-  }, [])
+  }, [course, setValue])
 
   const goBack = () => {
     dispatch(setStep(2))
@@ -33,33 +34,41 @@ export default function PublishCourse() {
   }
 
   const handleCoursePublish = async () => {
-    // check if form has been updated or not
+    const isPublic = getValues("public")
+    
+    // Check if form has been updated or not
     if (
-      (course?.status === COURSE_STATUS.PUBLISHED &&
-        getValues("public") === true) ||
-      (course?.status === COURSE_STATUS.DRAFT && getValues("public") === false)
+      (course?.status === COURSE_STATUS.PUBLISHED && isPublic === true) ||
+      (course?.status === COURSE_STATUS.DRAFT && isPublic === false)
     ) {
-      // form has not been updated
-      // no need to make api call
+      // No need to make API call, just go to courses
       goToCourses()
       return
     }
+
     const formData = new FormData()
     formData.append("courseId", course._id)
-    const courseStatus = getValues("public")
-      ? COURSE_STATUS.PUBLISHED
-      : COURSE_STATUS.DRAFT
+    const courseStatus = isPublic ? COURSE_STATUS.PUBLISHED : COURSE_STATUS.DRAFT
     formData.append("status", courseStatus)
+    
     setLoading(true)
-    const result = await editCourseDetails(formData, token)
-    if (result) {
-      goToCourses()
+    
+    try {
+      const result = await editCourseDetails(formData, token)
+      if (result) {
+        toast.success(`Course ${isPublic ? 'published' : 'saved as draft'} successfully!`)
+        goToCourses()
+      }
+    } catch (error) {
+      console.error("Publishing error:", error)
+      toast.error("Failed to publish course")
     }
+    
     setLoading(false)
   }
 
   const onSubmit = (data) => {
-    // console.log(data)
+    console.log("Publish form data:", data)
     handleCoursePublish()
   }
 
@@ -68,6 +77,7 @@ export default function PublishCourse() {
       <p className="text-2xl font-semibold text-richblack-5">
         Publish Settings
       </p>
+      
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Checkbox */}
         <div className="my-6 mb-8">
@@ -84,6 +94,15 @@ export default function PublishCourse() {
           </label>
         </div>
 
+        {/* Course Info Display */}
+        <div className="mb-6 p-4 bg-richblack-700 rounded-md">
+          <h3 className="text-lg font-semibold text-richblack-5 mb-2">Course Summary:</h3>
+          <p className="text-richblack-200"><strong>Title:</strong> {course?.courseName}</p>
+          <p className="text-richblack-200"><strong>Price:</strong> ₹{course?.price}</p>
+          <p className="text-richblack-200"><strong>Category:</strong> {course?.category?.name}</p>
+          <p className="text-richblack-200"><strong>Current Status:</strong> {course?.status}</p>
+        </div>
+
         {/* Next Prev Button */}
         <div className="ml-auto flex max-w-max items-center gap-x-4">
           <button
@@ -94,7 +113,12 @@ export default function PublishCourse() {
           >
             Back
           </button>
-          <IconBtn type="submit" customClasses="bg-yellow-100 px-4 py-2 rounded-md text-black font-semibold" disabled={loading} text="Save Changes" />
+          <IconBtn 
+            type="submit" 
+            customClasses="bg-yellow-100 px-4 py-2 rounded-md text-black font-semibold" 
+            disabled={loading} 
+            text={loading ? "Publishing..." : "Save Changes"} 
+          />
         </div>
       </form>
     </div>
